@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloverleaf AI — Government Sales Intelligence</title>
+<meta name="description" content="Cloverleaf AI monitors 70,000+ government agencies and turns public meetings into deal-shaping signals, delivered to your inbox every morning.">
+<link rel="icon" href="assets/logos/favicon-light.png">
+<style>
+@font-face{font-family:"PP Neue Montreal";font-weight:500;font-display:swap;src:url(assets/fonts/PPNeueMontreal-Medium.woff2) format("woff2")}
+@font-face{font-family:Satoshi;font-weight:400;font-display:swap;src:url(assets/fonts/Satoshi-Regular.woff2) format("woff2")}
+@font-face{font-family:"B612 Mono";font-weight:400;font-display:swap;src:url(assets/fonts/B612Mono-Regular.woff2) format("woff2")}
+@font-face{font-family:Satoshi;font-weight:500;font-display:swap;src:url(assets/fonts/Satoshi-Medium.woff2) format("woff2")}
+
+:root{
+  --ink:#0d0b0a; --ink-soft:#38302e; --muted:#4f4845; --faint:#7a7370;
+  --bg:#ffffff; --bg-2:#f3f3f1; --line:#e6e4e1;
+  --night:#10161b; --night-2:#1b242d;
+  --ice:#cdf2ff; --ice-deep:#9fd8ec; --ice-ink:#1d4556;
+  --f-head:"PP Neue Montreal",Satoshi,sans-serif; --f-body:Satoshi,sans-serif;
+  --r-xl:28px; --r-lg:20px; --r-md:14px; --r-sm:10px;
+  --wrap:1520px; --gut:clamp(16px,2.8vw,40px);
+  --ease:cubic-bezier(.23,1,.32,1);
+  --lift:0 18px 40px -18px rgba(13,11,10,.28),0 2px 6px rgba(13,11,10,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--f-body);font-weight:500;font-size:18px;line-height:1.55;color:var(--ink-soft);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--ice);color:var(--ink)}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+h1,h2,h3{font-family:var(--f-head);font-weight:500;color:var(--ink);letter-spacing:-.03em;line-height:1.04;text-wrap:balance}
+p{text-wrap:pretty}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
+.ico{flex:none;width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:#fff;color:var(--ink)}
+.ico svg{width:28px;height:28px}
+.tag{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-soft)}
+.tag::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 22px;border-radius:var(--r-sm);font-weight:500;font-size:15px;white-space:nowrap;transition:transform .16s var(--ease),background-color .2s ease,color .2s ease}
+.btn:active{transform:scale(.97)}
+.btn--dark{background:var(--ink);color:#fff}
+.btn--light{background:#fff;color:var(--ink)}
+.btn--line{box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+@media(hover:hover) and (pointer:fine){
+  .btn--dark:hover{background:var(--night-2)}
+  .btn--light:hover{background:#eefaff}
+  .btn--line:hover{background:var(--bg-2)}
+}
+.arrow{width:14px;height:14px}
+
+/* ---------- header ---------- */
+.hdr{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.86);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px)}
+.hdr .wrap{display:flex;align-items:center;height:76px;gap:24px}
+.hdr__logo img{width:164px;height:auto}
+.hdr nav{display:flex;gap:34px;margin:0 auto;font-size:15px;color:var(--muted)}
+.hdr nav a{transition:color .2s ease}
+.hdr nav a:hover{color:var(--ink)}
+.hdr__actions{display:flex;align-items:center;gap:8px}
+.hdr__actions .btn{height:42px}
+.burger{display:none;width:42px;height:42px;border-radius:var(--r-sm);align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px var(--line)}
+.menu{display:none;border-top:1px solid var(--line);padding:8px var(--gut) 20px}
+.menu a{display:block;padding:14px 0;font-family:var(--f-head);font-size:22px;color:var(--ink);border-bottom:1px solid var(--line)}
+.menu .btn{width:100%;margin-top:16px;color:#fff;font-family:var(--f-body);font-size:15px;border:0;padding:0}
+.hdr.open .menu{display:block}
+@media(max-width:980px){.hdr nav,.hdr__login{display:none}.burger{display:flex}.hdr__actions{margin-left:auto}}
+@media(max-width:520px){.hdr__actions .btn--dark{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(40px,6vw,80px) 0 0}
+.hero__top{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}
+.hero h1{font-size:clamp(42px,5.6vw,96px);max-width:1120px}
+.hero__lead{max-width:600px;margin-top:24px;font-size:clamp(17px,1.4vw,20px);color:var(--muted)}
+.hero__side{justify-self:end;display:grid;gap:24px;max-width:340px}
+.proof{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.proof img{height:26px;width:auto}
+.proof p{font-size:15px;line-height:1.45;color:var(--muted)}
+.proof q{display:block;color:var(--ink);font-size:18px;margin-bottom:4px}
+.hero__side .btn{justify-self:start}
+@media(max-width:860px){.hero__top{grid-template-columns:1fr}.hero__side{justify-self:start}}
+
+.hero__stage{position:relative;margin-top:clamp(36px,5vw,64px);height:clamp(460px,52vw,780px);border-radius:var(--r-xl);overflow:hidden;background:#d9d6d2 url(assets/img/hero-bg.webp) center/cover;clip-path:inset(0 0 0 0 round var(--r-xl));animation:stage 1.2s var(--ease) both}
+@keyframes stage{from{clip-path:inset(10% 5% 0 5% round var(--r-xl))}}
+.hero__person{position:absolute;z-index:1;bottom:-18%;left:50%;height:128%;width:auto;max-width:none;transform:translateX(-40%)}
+
+.ui{position:absolute;z-index:2;background:#fff;border-radius:var(--r-lg);box-shadow:var(--lift);padding:18px 20px;color:var(--ink)}
+.ui small{display:block;font-size:12px;color:var(--faint)}
+@media(max-width:700px){.hero__stage{height:560px}.hero__person{height:112%;bottom:-8%;transform:translateX(-48%)}}
+
+/* ---------- logos ---------- */
+.logos{padding:clamp(48px,6vw,72px) 0}
+.logos p{text-align:center;font-size:14px;color:var(--faint);margin-bottom:28px}
+.logos__row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:22px 32px}
+.logos__row img{height:26px;width:auto;max-width:132px;object-fit:contain;filter:brightness(0);opacity:.5;transition:opacity .2s ease}
+.logos__row img.t{height:38px}
+.logos__row img:hover{opacity:.9}
+
+/* ---------- about ---------- */
+.about{background:var(--bg-2);padding:clamp(72px,10vw,136px) 0}
+.about__grid{max-width:1180px}
+.about__text{font-family:var(--f-head);font-weight:500;font-size:clamp(26px,3.1vw,42px);line-height:1.18;letter-spacing:-.02em;color:var(--ink)}
+.about__text span{color:var(--faint)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(56px,7vw,96px)}
+.stat{padding:4px 28px;border-left:1px solid #d9d6d2}
+.stat b{display:block;font-family:var(--f-head);font-weight:500;font-size:clamp(40px,4.6vw,64px);letter-spacing:-.035em;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:14px;font-size:17px;color:var(--muted);max-width:260px}
+@media(max-width:860px){.about__grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr;gap:28px}.stat{padding:4px 0 4px 20px}}
+
+/* ---------- problem ---------- */
+.problem{padding:clamp(80px,11vw,152px) 0}
+.problem h2{font-size:clamp(36px,4.4vw,68px);max-width:900px}
+.pains{margin-top:clamp(40px,5vw,72px);display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.pain{padding:32px;border-radius:var(--r-xl);background:var(--bg-2);display:flex;flex-direction:column}
+.pain .ico{margin-bottom:56px}
+
+.pain h3{font-size:28px;letter-spacing:-.02em;margin-bottom:14px}
+.pain p{font-size:17px;line-height:1.5;color:var(--muted)}
+@media(max-width:1100px){.pains{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.pains{grid-template-columns:1fr}}
+
+/* ---------- trio ---------- */
+.trio{padding:0 0 clamp(80px,11vw,152px)}
+/* flow diagram, drawn in the language of cloverleaf.ai: thin lines, mono labels, S/T badges, clover mark */
+.flow{position:relative;max-width:1200px;margin:0 auto;aspect-ratio:1200/420;container-type:inline-size}
+.flow__lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.flow__lines path{fill:none;stroke:#1a1615;stroke-width:1;stroke-dasharray:4 6;animation:flow 1.6s linear infinite}
+.flow__lines circle{fill:#1a1615}
+@keyframes flow{to{stroke-dashoffset:-20}}
+.fnode{position:absolute;display:flex;align-items:center;gap:1.2cqw;height:5cqw;padding:0 1.6cqw 0 1cqw;background:#fff;border:1px solid var(--line);border-radius:1.2cqw;box-shadow:0 10px 30px -18px rgba(13,11,10,.3);font-family:"B612 Mono",monospace;font-size:1.05cqw;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.fnode--ice{background:var(--ice);border-color:#9fd8ec}
+.fbadge{flex:none;display:grid;place-items:center;width:3cqw;height:3cqw;border-radius:50%;border:1px solid #1a1615;background:var(--ice);font-size:1.2cqw;letter-spacing:0}
+.fbadge--cream{background:#f9f3e2}
+.fbadge--mail{background:#fff;border-color:#9fd8ec;color:#5bc4ea}
+.fbadge--mail svg{width:62%;height:62%}
+.fhub{position:absolute;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 24px 50px -24px rgba(13,11,10,.35)}
+.flow__mark{width:52%;height:52%;overflow:visible}
+.flow__mark path{fill:none;stroke:#1a1615;stroke-width:1.2;vector-effect:non-scaling-stroke}
+@media(max-width:760px){
+  .flow{aspect-ratio:auto;container-type:normal;display:flex;flex-direction:column;align-items:center;gap:28px}
+  .flow__lines{display:none}
+  .flow>*{position:relative!important;left:auto!important;top:auto!important}
+  .fnode{width:100%!important;height:56px;gap:12px;padding:0 14px 0 12px;border-radius:14px;font-size:11px;letter-spacing:.03em}
+  .fbadge{width:34px;height:34px;font-size:14px}
+  .fhub{width:160px!important}
+  .fnode--in::after,.fhub::after{content:"";position:absolute;left:50%;top:100%;height:28px;border-left:1px dashed #1a1615}
+}
+@media(prefers-reduced-motion:reduce){.flow__lines path{animation:none}}
+.trio__head{text-align:center;max-width:900px;margin:0 auto clamp(40px,5vw,64px)}
+.trio__head h2{font-size:clamp(38px,5.2vw,72px);margin-top:18px}
+.trio__head p{max-width:720px;margin:24px auto 0;font-size:19px;color:var(--muted)}
+
+/* ---------- how ---------- */
+.how{background:var(--bg-2);padding:clamp(80px,11vw,152px) 0}
+.how__grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(32px,6vw,88px);align-items:start}
+.how h2{font-size:clamp(36px,4.4vw,60px);margin:20px 0 36px}
+.acc{border-top:1px solid #dcd9d5}
+.acc__item{position:relative;border-bottom:1px solid #dcd9d5}
+.acc__item::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:2px;background:var(--ink);transform:scaleX(0);transform-origin:left;opacity:0;transition:opacity .4s ease}
+.acc__item.on::after{opacity:1;animation:prog 7s linear forwards}
+.acc:hover .acc__item.on::after{animation-play-state:paused}
+@keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.acc__btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 0;text-align:left;font-family:var(--f-head);font-weight:500;font-size:clamp(20px,1.8vw,26px);letter-spacing:-.02em;color:var(--faint);transition:color .4s ease}
+.acc__btn>svg{flex:none;transition:transform .5s cubic-bezier(.65,0,.35,1)}
+.acc__item.on .acc__btn{color:var(--ink)}
+.acc__item.on .acc__btn>svg{transform:rotate(45deg)}
+.acc__body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .7s cubic-bezier(.65,0,.35,1)}
+.acc__item.on .acc__body{grid-template-rows:1fr}
+.acc__body>div{overflow:hidden}
+.acc__body p{padding:0 0 28px;font-size:18px;color:var(--muted);max-width:600px;opacity:0;transform:translateY(8px);filter:blur(3px);transition:opacity .35s ease,transform .35s ease,filter .35s ease}
+.acc__item.on .acc__body p{opacity:1;transform:none;filter:none;transition:opacity .6s ease .25s,transform .7s var(--ease) .25s,filter .6s ease .25s}
+.how__photo{position:relative;border-radius:var(--r-xl);overflow:hidden;aspect-ratio:1/1}
+.how__photo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);filter:blur(8px);transition:opacity 1s ease,transform 1.6s var(--ease),filter 1s ease}
+.how__photo>img.on{opacity:1;transform:none;filter:none;z-index:1}
+@media(max-width:900px){.how__grid{grid-template-columns:1fr}.how__photo{aspect-ratio:4/4.2;order:-1}}
+
+/* ---------- case ---------- */
+.case{background:var(--night);color:rgba(255,255,255,.66);padding:clamp(80px,11vw,152px) 0}
+.case__head{display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap;margin-bottom:clamp(36px,4vw,56px)}
+.case .tag{color:rgba(255,255,255,.7)}
+.case h2{color:#fff;font-size:clamp(36px,4.6vw,64px);margin-top:18px;max-width:780px}
+.case h2 span{color:var(--ice)}
+.film{--fh:clamp(420px,50vw,780px);position:relative;height:var(--fh);border-radius:var(--r-xl);overflow:hidden;background:var(--night-2);isolation:isolate}
+/* 16:9 source scaled so the speaker is framed and the burned-in captions sit below the fold */
+.film__media{position:absolute;left:50%;top:calc(var(--fh) / -2.4);height:calc(var(--fh) / .58);width:calc(var(--fh) / .58 * 16 / 9);transform:translateX(-50%);border:0;object-fit:cover;pointer-events:none}
+.film::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(16,22,27,.7),transparent 50%);pointer-events:none}
+.sound{position:absolute;z-index:3;top:clamp(16px,3vw,32px);right:clamp(16px,3vw,32px);display:flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 14px;border-radius:99px;background:rgba(255,255,255,.92);color:var(--ink);font-size:15px;transition:transform .16s var(--ease),background-color .2s ease}
+.sound:active{transform:scale(.97)}
+.sound svg{width:22px;height:22px}
+.sound .on,.sound[aria-pressed="true"] .off{display:none}
+.sound[aria-pressed="true"] .on{display:block}
+.film .ui{left:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);width:min(420px,calc(100% - 32px));padding:22px 24px;z-index:3}
+.film .ui img{height:24px;width:auto;filter:brightness(0);margin-bottom:16px}
+.film .ui b{display:block;font-family:var(--f-head);font-weight:500;font-size:clamp(26px,2.6vw,34px);letter-spacing:-.03em;line-height:1.05}
+.film .who{position:absolute;z-index:3;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);text-align:right;color:#fff}
+.film .who b{display:block;font-weight:500}
+.film .who span{font-size:13px;opacity:.75}
+@media(max-width:700px){.film .who{display:none}.sound span{display:none}.sound{padding:0 13px}}
+
+/* ---------- values ---------- */
+.values{padding:clamp(80px,11vw,152px) 0}
+.values__grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,6vw,88px);align-items:center}
+.values__photo{border-radius:var(--r-xl);overflow:hidden;aspect-ratio:4/5}
+.values__photo img{width:100%;height:100%;object-fit:cover}
+.values h2{font-size:clamp(34px,4vw,54px);margin:20px 0 22px}
+.values__lead{color:var(--muted);max-width:560px;font-size:19px}
+@media(max-width:900px){.values__grid{grid-template-columns:1fr}.values__photo{aspect-ratio:4/3.4}}
+
+/* ---------- cta ---------- */
+.cta{padding:0 0 clamp(24px,3vw,40px)}
+.cta__stage{position:relative;border-radius:var(--r-xl);overflow:hidden;min-height:720px;display:flex;align-items:center;padding:clamp(16px,4vw,56px)}
+.cta__stage>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 40%}
+.cta__card{position:relative;background:#fff;border-radius:var(--r-xl);padding:clamp(28px,3.6vw,48px);width:min(520px,100%);box-shadow:var(--lift)}
+.cta h2{font-size:clamp(34px,3.8vw,56px);margin:10px 0 0}
+.cta__card>p{color:var(--muted)}
+.cta form{display:flex;gap:8px;margin-top:28px;padding:6px;border-radius:var(--r-md);background:var(--bg-2)}
+.cta input{flex:1;min-width:0;height:48px;padding:0 14px;border:0;background:none;font:inherit;font-size:16px;color:var(--ink)}
+.cta input::placeholder{color:var(--faint)}
+.cta input:focus{outline:none}
+.cta form:focus-within{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.cta small{display:block;margin-top:14px;font-size:13px;color:var(--faint)}
+.cta small a{text-decoration:underline;text-underline-offset:2px}
+@media(max-width:520px){.cta form{flex-direction:column;background:none;padding:0}.cta input{background:var(--bg-2);border-radius:var(--r-sm)}.cta__stage{min-height:0;padding:14px;align-items:flex-end;padding-top:280px}}
+
+/* ---------- footer ---------- */
+.ftr{padding:clamp(56px,7vw,96px) 0 28px;font-size:15px;color:var(--muted)}
+.ftr__grid{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:40px}
+.ftr__brand img{width:170px}
+.ftr__brand p{margin-top:18px;max-width:280px}
+.ftr h4{font-weight:500;font-size:14px;color:var(--ink);margin-bottom:16px}
+.ftr ul{list-style:none;display:grid;gap:10px}
+.ftr a{transition:color .2s ease}
+.ftr a:hover{color:var(--ink)}
+.ftr address{font-style:normal;display:grid;gap:6px;margin-top:18px}
+.ftr__mark{margin:clamp(48px,7vw,96px) 0 24px}
+.ftr__mark img{width:100%;height:auto;filter:brightness(0);opacity:.92}
+.ftr__bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:22px;border-top:1px solid var(--line);font-size:13px}
+.ftr__bottom nav{display:flex;gap:22px}
+@media(max-width:860px){.ftr__grid{grid-template-columns:1fr 1fr}.ftr__brand{grid-column:1/-1}}
+
+
+/* reduced motion: drop movement and scale, keep fades and the progress line */
+@media(prefers-reduced-motion:reduce){.hero__stage{animation:none}.how__photo>img,.acc__body p{transform:none!important}.btn:active,.sound:active{transform:none}}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+  <div class="wrap">
+    <a class="hdr__logo" href="#top" aria-label="Cloverleaf AI home"><img src="assets/logos/logo_dark.svg" alt="Cloverleaf AI" width="164" height="15"></a>
+    <nav aria-label="Primary">
+      <a href="https://www.cloverleaf.ai/product/">Product</a>
+      <a href="https://www.cloverleaf.ai/how-it-works/">How it works</a>
+      <a href="https://www.cloverleaf.ai/gtm-for-b2g-sellers/">Solutions</a>
+      <a href="https://www.cloverleaf.ai/customer-stories/">Customers</a>
+      <a href="https://www.cloverleaf.ai/blog/">Resources</a>
+    </nav>
+    <div class="hdr__actions">
+      <a class="btn btn--line hdr__login" href="https://auth.cloverleaf.ai/u/login">Log in</a>
+      <a class="btn btn--dark" href="https://www.cloverleaf.ai/get-a-demo/">Request a demo</a>
+      <button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true"><path d="M0 1h18M0 6h18M0 11h18" stroke="#0d0b0a" stroke-width="1.6"/></svg></button>
+    </div>
+  </div>
+  <div class="menu" id="menu">
+    <a href="https://www.cloverleaf.ai/product/">Product</a>
+    <a href="https://www.cloverleaf.ai/how-it-works/">How it works</a>
+    <a href="https://www.cloverleaf.ai/gtm-for-b2g-sellers/">Solutions</a>
+    <a href="https://www.cloverleaf.ai/customer-stories/">Customers</a>
+    <a href="https://auth.cloverleaf.ai/u/login">Log in</a>
+    <a class="btn btn--dark" href="https://www.cloverleaf.ai/get-a-demo/">Request a demo</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero__top">
+        <div>
+          <h1>Intelligence built for the full B2G sales cycle, tailored to your patch.</h1>
+          <p class="hero__lead">Cloverleaf AI monitors 70,000+ government agencies and turns public meetings into deal-shaping signals, delivered to your inbox every morning, so you act before the RFP.</p>
+        </div>
+        <div class="hero__side">
+          <div class="proof">
+            <img src="assets/logos/hero-avatar-logo.png" alt="Uber" style="filter:brightness(0)">
+            <p><q>It's the best business tool I've seen.</q>Jonathan Kuehn, Senior Account Executive</p>
+          </div>
+          <a class="btn btn--dark" href="https://www.cloverleaf.ai/get-a-demo/">Request a demo <svg class="arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.6"/></svg></a>
+        </div>
+      </div>
+
+      <div class="hero__stage">
+        <img class="hero__person" src="assets/img/hero-person.png" alt="Sales professional smiling at an alert on his phone" width="1538" height="1920">
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos" aria-label="Customers">
+    <div class="wrap">
+      <div class="logos__row">
+        <img src="assets/logos/trustbar-uber.svg" alt="Uber">
+        <img src="assets/logos/waste-management.svg" alt="Waste Management" class="t">
+        <img src="assets/logos/vialytics.svg" alt="vialytics">
+        <img src="assets/logos/holland-knight.png" alt="Holland &amp; Knight">
+        <img src="assets/logos/waste-connections.png" alt="Waste Connections">
+        <img src="assets/logos/pcc.svg" alt="PCC" class="t">
+        <img src="assets/logos/fbt-gibbons.png" alt="Frost Brown Todd / Gibbons" class="t">
+        <img src="assets/logos/octave-logo.svg" alt="Octave" class="t">
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT + STATS -->
+  <section class="about">
+    <div class="wrap">
+      <div class="about__grid">
+        <p class="about__text">If you're waiting for the RFP, you've already lost. <span>Government procurement is complex. Your GTM tools aren't built for it. B2G deals take shape in committee meetings long before RFPs, but you can't scalably mine them for insights.</span></p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b data-to="49900" data-suffix="%">49,900%</b><span>ROI. We know… it sounds ridiculous but it's true</span></div>
+        <div class="stat"><b data-to="20" data-prefix="$" data-suffix="M">$20M</b><span>Sourced Revenue. Within 2 months</span></div>
+        <div class="stat"><b data-to="1" data-prefix="$" data-suffix="M+">$1M+</b><span>Pipeline. Per rep, per quarter</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="wrap">
+      <h2>The state of B2G sales intelligence today</h2>
+      <div class="pains">
+        <div class="pain"><span class="ico"><svg viewBox="0 0 42 42" fill="currentColor" aria-hidden="true"><path d="M5.87322 34.1403C4.62441 32.9004 4 31.4051 4 29.6542C4 27.9032 4.62441 26.4079 5.87322 25.168C7.12204 23.9282 8.62825 23.3083 10.3919 23.3083C12.1555 23.3083 13.6617 23.9282 14.9105 25.168C16.1593 26.4079 16.7837 27.9032 16.7837 29.6542C16.7837 31.4051 16.1593 32.9004 14.9105 34.1403C13.6617 35.3801 12.1555 36 10.3919 36C8.62825 36 7.12204 35.3801 5.87322 34.1403ZM27.0895 34.1403C25.8407 32.9004 25.2163 31.4051 25.2163 29.6542C25.2163 27.9032 25.8407 26.4079 27.0895 25.168C28.3383 23.9282 29.8445 23.3083 31.6081 23.3083C33.3718 23.3083 34.878 23.9282 36.1268 25.168C37.3756 26.4079 38 27.9032 38 29.6542C38 31.4051 37.3756 32.9004 36.1268 34.1403C34.878 35.3801 33.3718 36 31.6081 36C29.8445 36 28.3383 35.3801 27.0895 34.1403ZM10.3919 33.3675C11.4208 33.3675 12.3015 33.004 13.0337 32.277C13.766 31.55 14.1321 30.6757 14.1321 29.6542C14.1321 28.6326 13.766 27.7583 13.0337 27.0313C12.3015 26.3043 11.4208 25.9408 10.3919 25.9408C9.36286 25.9408 8.48224 26.3043 7.74998 27.0313C7.01772 27.7583 6.6516 28.6326 6.6516 29.6542C6.6516 30.6757 7.01772 31.55 7.74998 32.277C8.48224 33.004 9.36286 33.3675 10.3919 33.3675ZM31.6081 33.3675C32.6371 33.3675 33.5178 33.004 34.25 32.277C34.9823 31.55 35.3484 30.6757 35.3484 29.6542C35.3484 28.6326 34.9823 27.7583 34.25 27.0313C33.5178 26.3043 32.6371 25.9408 31.6081 25.9408C30.5792 25.9408 29.6985 26.3043 28.9663 27.0313C28.234 27.7583 27.8679 28.6326 27.8679 29.6542C27.8679 30.6757 28.234 31.55 28.9663 32.277C29.6985 33.004 30.5792 33.3675 31.6081 33.3675ZM18.8598 24.7577C18.2737 24.1762 17.9807 23.4679 17.9807 22.633C17.9807 21.798 18.2737 21.0897 18.8598 20.5082C19.4456 19.9263 20.159 19.6353 21 19.6353C21.841 19.6353 22.5544 19.9263 23.1402 20.5082C23.7263 21.0897 24.0193 21.798 24.0193 22.633C24.0193 23.4679 23.7263 24.1762 23.1402 24.7577C22.5544 25.3396 21.841 25.6306 21 25.6306C20.159 25.6306 19.4456 25.3396 18.8598 24.7577ZM16.4814 14.832C15.2326 13.5921 14.6081 12.0968 14.6081 10.3458C14.6081 8.59494 15.2326 7.09957 16.4814 5.85974C17.7302 4.61991 19.2364 4 21 4C22.7636 4 24.2698 4.61991 25.5186 5.85974C26.7674 7.09957 27.3919 8.59494 27.3919 10.3458C27.3919 12.0968 26.7674 13.5921 25.5186 14.832C24.2698 16.0718 22.7636 16.6917 21 16.6917C19.2364 16.6917 17.7302 16.0718 16.4814 14.832ZM23.6419 12.9687C24.3741 12.2417 24.7403 11.3674 24.7403 10.3458C24.7403 9.32426 24.3741 8.44998 23.6419 7.72299C22.9096 6.996 22.029 6.63251 21 6.63251C19.971 6.63251 19.0904 6.996 18.3581 7.72299C17.6259 8.44998 17.2597 9.32426 17.2597 10.3458C17.2597 11.3674 17.6259 12.2417 18.3581 12.9687C19.0904 13.6957 19.971 14.0592 21 14.0592C22.029 14.0592 22.9096 13.6957 23.6419 12.9687Z"/></svg></span><h3>Incomplete Design</h3><p>Intelligence tools have been created, but they're either too horizontal - lacking B2G nuance - or too bottom-funnel to help you before the RFP is written.</p></div>
+        <div class="pain"><span class="ico"><svg viewBox="0 0 27 27" fill="currentColor" aria-hidden="true"><path d="M5 21.7815V20.0623H7.04878V11.509C7.04878 9.96738 7.51921 8.60434 8.46007 7.41983C9.40073 6.23532 10.6085 5.47772 12.0833 5.14701V3H14.9167V5.14701C16.3915 5.47772 17.5993 6.23532 18.5399 7.41983C19.4808 8.60434 19.9512 9.96738 19.9512 11.509V20.0623H22V21.7815H5ZM13.498 25C12.9342 25 12.4521 24.7971 12.0519 24.3913C11.6514 23.9855 11.4512 23.4977 11.4512 22.9278H15.5488C15.5488 23.4996 15.348 23.9879 14.9464 24.3927C14.5448 24.7976 14.062 25 13.498 25ZM8.74878 20.0623H18.2512V11.509C18.2512 10.1819 17.7874 9.04929 16.8598 8.11105C15.9319 7.17261 14.812 6.7034 13.5 6.7034C12.188 6.7034 11.0681 7.17261 10.1402 8.11105C9.2126 9.04929 8.74878 10.1819 8.74878 11.509V20.0623ZM12.65 14.9258H14.35V9.30463H12.65V14.9258ZM13.5 18.2546C13.7593 18.2546 13.9768 18.1649 14.1522 17.9855C14.3277 17.8063 14.4155 17.5874 14.4155 17.3287C14.4155 17.07 14.3277 16.8511 14.1522 16.6719C13.9768 16.4925 13.7593 16.4028 13.5 16.4028C13.2407 16.4028 13.0232 16.4925 12.8478 16.6719C12.6723 16.8511 12.5846 17.07 12.5846 17.3287C12.5846 17.5874 12.6723 17.8063 12.8478 17.9855C13.0232 18.1649 13.2407 18.2546 13.5 18.2546Z"/></svg></span><h3>Reactive</h3><p>The trap of government sales is thinking everything moves slowly, misinformation about your company in a hearing yesterday can kill your deal today.</p></div>
+        <div class="pain"><span class="ico"><svg viewBox="0 0 28 28" fill="currentColor" aria-hidden="true"><path d="M12.0393 10.1039H20.6065V8.35996H12.0393V10.1039ZM12.0393 13.6814H17.1796V11.9374H12.0393V13.6814ZM17.0679 20.6013H22.162L22.1948 21.6567L4.86051 24L3 10.0862L4.72858 9.88042L6.37176 22.0435L17.0679 20.6013ZM7.64599 18.1239V4H25V18.1239H7.64599ZM9.35943 16.38H23.2866V5.74398H9.35943V16.38Z"/></svg></span><h3>Data-dump</h3><p>Other intelligence tools flood your inbox, CRM, and workflows with noisy data alerts leaving you feeling more cluttered than clear-headed.</p></div>
+        <div class="pain"><span class="ico"><svg viewBox="0 0 29 29" fill="currentColor" aria-hidden="true"><path d="M21.6585 14.9231V13.1231H26V14.9231H21.6585ZM23.0301 23L19.5571 20.3969L20.6517 18.9617L24.1247 21.5645L23.0301 23ZM20.6054 9.0386L19.5109 7.6031L22.9839 5L24.0787 6.4355L20.6054 9.0386ZM6.39464 21.8V17.1155H3V10.9307H9.8124L15.1929 7.7231V20.3231L9.8124 17.1155H8.19583V21.8H6.39464ZM13.3917 17.1248V10.9214L10.311 12.7307H4.80119V15.3155H10.311L13.3917 17.1248ZM16.8554 17.7662V10.28C17.3265 10.7062 17.7059 11.2431 17.9937 11.8907C18.2817 12.5385 18.4257 13.2493 18.4257 14.0231C18.4257 14.7969 18.2817 15.5077 17.9937 16.1555C17.7059 16.8031 17.3265 17.34 16.8554 17.7662Z"/></svg></span><h3>Spray &amp; Pray</h3><p>We pretend we can scale personalized outreach, but the Public Sector TAM is limited. New cities and counties don't pop up each week.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRIO -->
+  <section class="trio">
+    <div class="wrap">
+      <div class="trio__head">
+        <h2>Cloverleaf AI customers don't answer bids, they shape the RFP.</h2>
+        <p>While other B2G tools scrape public RFP databases, Cloverleaf AI customers tap into committee meetings years before the RFP. They know the decision makers, hear pain points in their own words, and close bigger deals faster with higher win rates.</p>
+        <a class="btn btn--dark" href="https://www.cloverleaf.ai/how-it-works/" style="margin-top:28px">See how it works</a>
+      </div>
+      <div class="flow" role="img" aria-label="Committee meetings go into Cloverleaf AI, which identifies speakers by voice and delivers one daily email, synced to Salesforce and matched to your territory.">
+        <svg class="flow__lines" viewBox="0 0 1200 420" aria-hidden="true">
+          <path d="M320 210H490"/>
+          <path d="M710 210C785 210 785 90 860 90"/>
+          <path d="M710 210H860"/>
+          <path d="M710 210C785 210 785 330 860 330"/>
+          <circle cx="490" cy="210" r="3.5"/><circle cx="860" cy="90" r="3.5"/><circle cx="860" cy="210" r="3.5"/><circle cx="860" cy="330" r="3.5"/>
+        </svg>
+        <div class="fnode fnode--in" style="left:0.000%;top:42.857%;width:26.667%"><span class="fbadge fbadge--cream">T</span>Speakers identified by voice</div>
+        <div class="fhub" style="left:40.833%;top:23.810%;width:18.333%"><svg class="flow__mark" viewBox="-4 -4 597 597" aria-hidden="true"><path d="M388.708 0.938178C498.372 0.938178 587.272 89.838 587.272 199.502C587.272 309.165 498.372 398.065 388.708 398.065H190.145L190.145 199.502C190.145 89.838 279.044 0.938179 388.708 0.938178Z"/><path d="M199.207 0.436725C89.5431 0.436725 0.64335 89.3365 0.643346 199C0.643343 308.664 89.5431 397.564 199.207 397.564H397.77L397.77 199C397.77 89.3365 308.871 0.436726 199.207 0.436725Z"/><path d="M588.211 389.334C588.335 498.935 499.585 587.997 389.984 588.122C280.383 588.245 191.434 499.497 191.31 389.896L191.085 190.994L389.309 190.77C499.035 190.645 588.087 279.607 588.211 389.334Z"/><path d="M199 586.767C89.3363 586.767 0.436521 497.867 0.436523 388.204C0.436527 278.54 89.3363 189.64 199 189.64L397.564 189.64L397.564 388.204C397.564 497.867 308.664 586.767 199 586.767Z"/></svg></div>
+        <div class="fnode" style="left:71.667%;top:14.286%;width:28.333%"><span class="fbadge">S</span>Everything syncs to Salesforce</div>
+        <div class="fnode fnode--ice" style="left:71.667%;top:42.857%;width:28.333%"><span class="fbadge fbadge--mail"><svg viewBox="0 0 57 57" aria-hidden="true"><path d="M10.7711 45.0004C9.69623 45.0004 8.79945 44.6374 8.08079 43.9114C7.36212 43.1854 7.00201 42.2787 7.00045 41.1912L7.00045 15.8095C7.00045 14.7237 7.36056 13.8177 8.08079 13.0917C8.80101 12.3657 9.69701 12.002 10.7688 12.0004H45.2321C46.3055 12.0004 47.2015 12.3642 47.9201 13.0917C48.6388 13.8193 48.9989 14.7252 49.0005 15.8095V41.1936C49.0005 42.2779 48.6403 43.1838 47.9201 43.9114C47.1999 44.6389 46.3039 45.0019 45.2321 45.0004H10.7711ZM46.6671 16.4436L29.0458 28.0973C28.8809 28.1837 28.7145 28.2568 28.5465 28.3165C28.3769 28.3747 28.1949 28.4037 28.0005 28.4037C27.806 28.4037 27.624 28.3747 27.4545 28.3165C27.2849 28.2584 27.1185 28.1853 26.9551 28.0973L9.33379 16.4412L9.33379 41.1912C9.33379 41.6155 9.46834 41.9636 9.73745 42.2354C10.0066 42.5073 10.3511 42.6432 10.7711 42.6432H45.2321C45.6506 42.6432 45.9943 42.5073 46.2635 42.2354C46.5326 41.9636 46.6671 41.6155 46.6671 41.1912V16.4436ZM28.0005 26.1432L45.9485 14.3575H10.0525L28.0005 26.1432ZM9.33379 16.941V15.0293V15.1095V14.3575V15.1118V14.9892V16.941Z" fill="currentColor"/></svg></span>One daily email</div>
+        <div class="fnode" style="left:71.667%;top:71.429%;width:28.333%"><span class="fbadge">T</span>Matched to seller territory</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section class="how" id="how">
+    <div class="wrap how__grid">
+      <div>
+        <span class="tag">Key benefits</span>
+        <h2>How Cloverleaf AI Works Smarter</h2>
+        <div class="acc">
+          <div class="acc__item on"><button class="acc__btn" aria-expanded="true">Full-funnel visibility<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.6"/></svg></button><div class="acc__body"><div><p>Purpose-built for B2G and tuned for the full funnel, getting you in the conversation early so you show up as a trusted partner, not just another vendor.</p></div></div></div>
+          <div class="acc__item"><button class="acc__btn" aria-expanded="false">Timely execution<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.6"/></svg></button><div class="acc__body"><div><p>Daily early-morning alerts allow you to stay a step ahead in every stage of the deal. Proactively objection-handle to accelerate the close.</p></div></div></div>
+          <div class="acc__item"><button class="acc__btn" aria-expanded="false">Actionable insights<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.6"/></svg></button><div class="acc__body"><div><p>Cloverleaf AI is configured to your territory, your champions, listening for pain points your solution solves.</p></div></div></div>
+          <div class="acc__item"><button class="acc__btn" aria-expanded="false">Tailored outreach<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.6"/></svg></button><div class="acc__body"><div><p>Every touch point counts, and personalization requires real research. Surface your buyers' exact language, so every message lands.</p></div></div></div>
+        </div>
+      </div>
+      <div class="how__photo">
+        <img class="on" src="assets/img/int2-photo-funnel.webp" alt="Seller reading insights on his phone while travelling by train" loading="lazy">
+        <img src="assets/img/int2-photo-execution.webp" alt="Sales team talking together in an office" loading="lazy">
+        <img src="assets/img/int2-photo-insights.webp" alt="Professional walking through a government building lobby" loading="lazy">
+        <img src="assets/img/int2-photo-outreach.webp" alt="Seller smiling at an insight on his phone" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE -->
+  <section class="case" aria-labelledby="case-h">
+    <div class="wrap">
+      <div class="case__head">
+        <div>
+          <span class="tag">Case study · Uber Transit</span>
+          <h2 id="case-h">Don't just take it from us…</h2>
+          <p style="margin-top:16px;max-width:560px">How Uber Transit turned public meeting intelligence into a predictable revenue motion.</p>
+        </div>
+        <a class="btn btn--light" href="https://www.cloverleaf.ai/customer-stories/">Read full story <svg class="arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.6"/></svg></a>
+      </div>
+      <div class="film">
+        <video class="film__media" id="film-video" src="assets/video/uber-transit.mp4" poster="assets/img/uber-video-thumb.jpg" autoplay muted loop playsinline preload="auto" aria-label="Uber Transit case study video"></video>
+        <button class="sound" id="film-sound" aria-pressed="false" aria-label="Turn sound on">
+          <svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.775 19.575q-.275.175-.55.325t-.575.275q-.375.175-.762 0t-.538-.575q-.15-.375.038-.737t.562-.538q.1-.05.188-.1t.187-.1L12 14.8v2.775q0 .675-.612.938T10.3 18.3L7 15H4q-.425 0-.712-.288T3 14v-4q0-.425.288-.712T4 9h2.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.275.7t-.275.7t-.7.275t-.7-.275zm2.225-7.6q0-2.075-1.1-3.787t-2.95-2.563q-.375-.175-.55-.537t-.05-.738q.15-.4.538-.575t.787 0Q18.1 4.85 19.55 7.063T21 11.974q0 .825-.15 1.638t-.425 1.562q-.2.55-.612.688t-.763.012t-.562-.45t-.013-.75q.275-.65.4-1.312T19 11.975m-4.225-3.55Q15.6 8.95 16.05 10t.45 2v.25q0 .125-.025.25q-.05.325-.35.425t-.55-.15L14.3 11.5q-.15-.15-.225-.337T14 10.775V8.85q0-.3.263-.437t.512.012M9.75 6.95Q9.6 6.8 9.6 6.6t.15-.35l.55-.55q.475-.475 1.087-.213t.613.938V8q0 .35-.3.475t-.55-.125z"/></svg>
+          <svg class="on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 11.975q0-2.075-1.1-3.787t-2.95-2.563q-.375-.175-.55-.537t-.05-.738q.15-.4.538-.575t.787 0Q18.1 4.85 19.55 7.063T21 11.974t-1.45 4.913t-3.875 3.287q-.4.175-.787 0t-.538-.575q-.125-.375.05-.737t.55-.538q1.85-.85 2.95-2.562t1.1-3.788M7 15H4q-.425 0-.712-.288T3 14v-4q0-.425.288-.712T4 9h3l3.3-3.3q.475-.475 1.088-.213t.612.938v11.15q0 .675-.612.938T10.3 18.3zm9.5-3q0 1.05-.475 1.988t-1.25 1.537q-.25.15-.513.013T14 15.1V8.85q0-.3.263-.437t.512.012q.775.625 1.25 1.575t.475 2"/></svg>
+          <span>Sound on</span>
+        </button>
+        <span class="ui">
+          <img src="assets/logos/casestudy-uber-wordmark-2048x719.png" alt="Uber Transit">
+          <b>$1M+ in pipeline per rep, per quarter</b>
+        </span>
+        <span class="who"><b>Jon Kuehn</b><span>Senior Account Executive, Uber Transit</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="values">
+    <div class="wrap values__grid">
+      <div>
+        <h2>The full-funnel B2G sales intelligence layer built for front-line sellers.</h2>
+        <p class="values__lead" style="margin-bottom:36px">At Cloverleaf AI we value a full-funnel visibility for better research and relationship building with your prospects, value high-quality insights over quantity, and tailored GTM motions that reflect the market you work in.</p>
+        <a class="btn btn--dark" href="https://www.cloverleaf.ai/get-a-demo/">Request a demo <svg class="arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.6"/></svg></a>
+      </div>
+      <div class="values__photo"><img src="assets/img/switchback-businesswoman.webp" alt="Businesswoman reviewing insights on her phone during a flight" loading="lazy"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="demo">
+    <div class="wrap">
+      <div class="cta__stage">
+        <img src="assets/img/switchback-demo-contact-1.webp" alt="Hand holding a phone showing a new Cloverleaf AI email alert" loading="lazy">
+        <div class="cta__card">
+          <p>See what insights you’re missing in your territory.</p>
+          <h2>Don’t spend another day in the dark.</h2>
+          <form action="https://www.cloverleaf.ai/get-a-demo/" method="get">
+            <label for="email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Work email</label>
+            <input id="email" type="email" name="email" placeholder="Work email" autocomplete="email" required>
+            <button class="btn btn--dark" type="submit">Request a demo</button>
+          </form>
+          <small>By clicking Sign Up you’re confirming that you agree with our <a href="https://www.cloverleaf.ai/terms-of-service/">Terms and Conditions</a>.</small>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr__grid">
+      <div class="ftr__brand">
+        <img src="assets/logos/logo_dark.svg" alt="Cloverleaf AI">
+        <address>
+          <span>600 Grant St. Ste. 650, Denver, CO 80203</span>
+          <a href="tel:+18474145740">847.414.5740</a>
+          <a href="mailto:support@cloverleaf.ai">support@cloverleaf.ai</a>
+        </address>
+      </div>
+      <div><h4>Product</h4><ul><li><a href="https://www.cloverleaf.ai/how-it-works/">How it works</a></li><li><a href="https://www.cloverleaf.ai/product/">Product</a></li><li><a href="https://www.cloverleaf.ai/get-a-demo/">Request a demo</a></li><li><a href="https://trust.cloverleaf.ai/">Trust Center</a></li></ul></div>
+      <div><h4>Solutions</h4><ul><li><a href="https://www.cloverleaf.ai/for-sellers/">For Sellers</a></li><li><a href="https://www.cloverleaf.ai/for-sales-leadership/">For Sales Leadership</a></li><li><a href="https://www.cloverleaf.ai/for-gtm-operations/">For GTM Ops</a></li><li><a href="https://www.cloverleaf.ai/for-govtech/">For GovTech</a></li><li><a href="https://www.cloverleaf.ai/government-affairs/">Government Affairs</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="https://www.cloverleaf.ai/about/">About us</a></li><li><a href="https://www.cloverleaf.ai/customer-stories/">Customer stories</a></li><li><a href="https://www.cloverleaf.ai/blog/">Blog</a></li><li><a href="https://www.cloverleaf.ai/newsroom/">Newsroom</a></li><li><a href="https://www.linkedin.com/company/cloverleaf-ai/">LinkedIn</a></li></ul></div>
+    </div>
+    <div class="ftr__mark" aria-hidden="true"><img src="assets/logos/footer-marquee-logo.svg" alt=""></div>
+    <div class="ftr__bottom">
+      <span>© 2026 Cloverleaf AI. All rights reserved.</span>
+      <nav aria-label="Legal"><a href="https://www.cloverleaf.ai/privacy-policy/">Privacy</a><a href="https://www.cloverleaf.ai/terms-of-service/">Terms</a><a href="https://www.cloverleaf.ai/cookies-settings/">Cookies</a></nav>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+// menu
+const hdr=document.getElementById('hdr'),burger=hdr.querySelector('.burger');
+burger.addEventListener('click',()=>burger.setAttribute('aria-expanded',hdr.classList.toggle('open')));
+
+// stats count-up (final values are already in the markup)
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);
+  const el=e.target,to=+el.dataset.to,p=el.dataset.prefix||'',s=el.dataset.suffix||'',t0=performance.now();
+  const tick=t=>{const k=Math.min((t-t0)/1400,1),v=Math.round(to*(1-Math.pow(1-k,4)));el.textContent=p+v.toLocaleString('en-US')+s;if(k<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}),{threshold:.6});
+document.querySelectorAll('[data-to]').forEach(el=>io.observe(el));
+
+// benefits accordion, auto-advance
+// the progress line under the open item is a CSS animation; when it finishes, the next item opens
+const items=[...document.querySelectorAll('.acc__item')],pics=[...document.querySelectorAll('.how__photo>img')];let cur=0;
+const open=i=>{cur=i;items.forEach((it,j)=>{it.classList.remove('on');it.querySelector('button').setAttribute('aria-expanded',j===i)});void items[i].offsetWidth;items[i].classList.add('on');pics.forEach((p,j)=>p.classList.toggle('on',j===i))};
+items.forEach((it,i)=>{it.querySelector('button').addEventListener('click',()=>open(i));it.addEventListener('animationend',e=>{if(e.animationName==='prog'&&it.classList.contains('on'))open((i+1)%items.length)})});
+
+// case study video: plays muted on loop; the only control is sound on/off
+const vid=document.getElementById('film-video'),snd=document.getElementById('film-sound');
+// start playback explicitly when the section is visible (some browsers ignore the autoplay attribute)
+const tryPlay=()=>vid.play().catch(()=>{});
+new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?tryPlay():vid.pause()),{threshold:.25}).observe(vid.parentElement);
+addEventListener('pointerdown',tryPlay,{once:true});
+snd.addEventListener('click',()=>{vid.muted=!vid.muted;if(!vid.muted){vid.volume=1;vid.play()}
+  snd.setAttribute('aria-pressed',!vid.muted);snd.setAttribute('aria-label',vid.muted?'Turn sound on':'Turn sound off');snd.querySelector('span').textContent=vid.muted?'Sound on':'Sound off'});
+</script>
+</body>
+</html>
