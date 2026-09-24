@@ -69,25 +69,25 @@ p{text-wrap:pretty}
 @media(max-width:520px){.hdr__actions .btn--dark{display:none}}
 
 /* ---------- hero ---------- */
-.hero{padding:clamp(40px,6vw,80px) 0 0}
-.hero__top{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}
-.hero h1{font-size:clamp(42px,5.6vw,96px);max-width:1120px}
-.hero__lead{max-width:600px;margin-top:24px;font-size:clamp(17px,1.4vw,20px);color:var(--muted)}
-.hero__side{justify-self:end;display:grid;gap:24px;max-width:340px}
-.proof{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
-.proof img{height:26px;width:auto}
-.proof p{font-size:15px;line-height:1.45;color:var(--muted)}
-.proof q{display:block;color:var(--ink);font-size:18px;margin-bottom:4px}
+.hero{padding:clamp(8px,1.4vw,20px) 0 0}
+.hero__stage{position:relative;height:max(640px,min(calc(100svh - 96px),940px));border-radius:var(--r-xl);overflow:hidden;background:#3a342f url(assets/img/hero-bg.webp) center/cover;clip-path:inset(0 0 0 0 round var(--r-xl));animation:stage 1.2s var(--ease) both}
+@keyframes stage{from{clip-path:inset(6% 4% 0 4% round var(--r-xl))}}
+/* man sits in the right half so the headline never covers his hands */
+.hero__person{position:absolute;z-index:1;bottom:-14%;right:-3%;height:122%;width:auto;max-width:none}
+.hero__content{position:absolute;z-index:3;inset:auto 0 0 0;display:flex;justify-content:space-between;align-items:flex-end;gap:40px;padding:clamp(24px,4vw,56px)}
+.hero__text{max-width:880px}
+.hero h1{font-size:clamp(40px,5.2vw,88px);color:#fff}
+.hero__lead{max-width:540px;margin-top:22px;font-size:clamp(17px,1.4vw,20px);color:rgba(255,255,255,.82)}
+.hero__side{display:grid;gap:22px;max-width:320px;flex:none}
+.proof{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.proof img{height:26px;width:auto;filter:brightness(0) invert(1)}
+.proof p{font-size:15px;line-height:1.45;color:rgba(255,255,255,.75)}
+.proof q{display:block;color:#fff;font-size:18px;margin-bottom:4px}
 .hero__side .btn{justify-self:start}
-@media(max-width:860px){.hero__top{grid-template-columns:1fr}.hero__side{justify-self:start}}
-
-.hero__stage{position:relative;margin-top:clamp(36px,5vw,64px);height:clamp(460px,52vw,780px);border-radius:var(--r-xl);overflow:hidden;background:#d9d6d2 url(assets/img/hero-bg.webp) center/cover;clip-path:inset(0 0 0 0 round var(--r-xl));animation:stage 1.2s var(--ease) both}
-@keyframes stage{from{clip-path:inset(10% 5% 0 5% round var(--r-xl))}}
-.hero__person{position:absolute;z-index:1;bottom:-18%;left:50%;height:128%;width:auto;max-width:none;transform:translateX(-40%)}
 
 .ui{position:absolute;z-index:2;background:#fff;border-radius:var(--r-lg);box-shadow:var(--lift);padding:18px 20px;color:var(--ink)}
 .ui small{display:block;font-size:12px;color:var(--faint)}
-@media(max-width:700px){.hero__stage{height:560px}.hero__person{height:112%;bottom:-8%;transform:translateX(-48%)}}
+@media(max-width:860px){.hero__content{flex-direction:column;align-items:flex-start;gap:28px}.hero__stage{height:auto;min-height:760px;display:flex;flex-direction:column;justify-content:flex-end}.hero__person{height:100%;width:auto;bottom:0;top:auto;right:auto;left:50%;transform:translateX(-47%)}.hero__content{position:relative;padding-top:340px}}
 
 /* ---------- logos ---------- */
 .logos{padding:clamp(48px,6vw,72px) 0}
@@ -184,7 +184,6 @@ p{text-wrap:pretty}
 .film{--fh:clamp(420px,50vw,780px);position:relative;height:var(--fh);border-radius:var(--r-xl);overflow:hidden;background:var(--night-2);isolation:isolate}
 /* 16:9 source scaled so the speaker is framed and the burned-in captions sit below the fold */
 .film__media{position:absolute;left:50%;top:calc(var(--fh) / -2.4);height:calc(var(--fh) / .58);width:calc(var(--fh) / .58 * 16 / 9);transform:translateX(-50%);border:0;object-fit:cover;pointer-events:none}
-.film::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(16,22,27,.7),transparent 50%);pointer-events:none}
 .sound{position:absolute;z-index:3;top:clamp(16px,3vw,32px);right:clamp(16px,3vw,32px);display:flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 14px;border-radius:99px;background:rgba(255,255,255,.92);color:var(--ink);font-size:15px;transition:transform .16s var(--ease),background-color .2s ease}
 .sound:active{transform:scale(.97)}
 .sound svg{width:22px;height:22px}
@@ -277,24 +276,21 @@ p{text-wrap:pretty}
   <!-- HERO -->
   <section class="hero">
     <div class="wrap">
-      <div class="hero__top">
-        <div>
-          <h1>Intelligence built for the full B2G sales cycle, tailored to your patch.</h1>
-          <p class="hero__lead">Cloverleaf AI monitors 70,000+ government agencies and turns public meetings into deal-shaping signals, delivered to your inbox every morning, so you act before the RFP.</p>
-        </div>
-        <div class="hero__side">
-          <div class="proof">
-            <img src="assets/logos/hero-avatar-logo.png" alt="Uber" style="filter:brightness(0)">
-            <p><q>It's the best business tool I've seen.</q>Jonathan Kuehn, Senior Account Executive</p>
-          </div>
-          <a class="btn btn--dark" href="https://www.cloverleaf.ai/get-a-demo/">Request a demo <svg class="arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.6"/></svg></a>
-        </div>
-      </div>
-
       <div class="hero__stage">
         <img class="hero__person" src="assets/img/hero-person.png" alt="Sales professional smiling at an alert on his phone" width="1538" height="1920">
-
-
+        <div class="hero__content">
+          <div class="hero__text">
+            <h1>Intelligence built for the full B2G sales cycle, tailored to your patch.</h1>
+            <p class="hero__lead">Cloverleaf AI monitors 70,000+ government agencies and turns public meetings into deal-shaping signals, delivered to your inbox every morning, so you act before the RFP.</p>
+          </div>
+          <div class="hero__side">
+            <div class="proof">
+              <img src="assets/logos/hero-avatar-logo.png" alt="Uber">
+              <p><q>It's the best business tool I've seen.</q>Jonathan Kuehn, Senior Account Executive</p>
+            </div>
+            <a class="btn btn--light" href="https://www.cloverleaf.ai/get-a-demo/">Request a demo <svg class="arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.6"/></svg></a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
